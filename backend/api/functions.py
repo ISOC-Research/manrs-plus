@@ -10,6 +10,7 @@ from fastapi import  HTTPException
 from sqlalchemy import and_, or_, select
 import pandas as pd
 
+
 def read_file_and_extract_content(file_path: str):
     with open(file_path, "r") as file:
         if file_path.endswith(".json"):
@@ -42,6 +43,7 @@ def get_rov_from_api( asn):
     response = requests.get(f'https://api.rovista.netsecurelab.org/rovista/api/AS-roa-ratios/{asn}')
     try:
         rovs_data =response.json()
+        print(rovs_data)
         return rovs_data[-1]['ratio']
     except Exception as err:
         print(err)
@@ -82,8 +84,16 @@ def get_all_categories(db):
             categories.add(row.category_1)
         if row.category_2 is not None:
             categories.add(row.category_2)
-    
-    return categories
+    return sorted(categories)
+
+def get_all_countries(db):
+    manrs_data = db.query(ManrsDataTable).all()
+    countries = set()
+    for row in manrs_data:
+        if row.country is not None:
+            countries.add(row.country)
+    sorted_countries = sorted(countries)
+    return sorted_countries
 
 
 def get_asns_by_country_and_category(db, country, category, limit=0, offset=100):
@@ -150,17 +160,19 @@ def get_providers_data(db: Session, asn: str, detail: bool, level_two: bool):
     if detail:
         for key in providers.keys():
            
-            providers_details = []
+            providers_details = {}
             
             for key_l2 in providers[key]:
-                providers_details.append(get_metrics_db(db, key_l2))
-            providers[key] = {'detail': get_metrics_db(db, key), 'providers_l2':providers_details}
+                providers_details[key_l2] = {'detail': get_metrics_db(db, key_l2)} 
+            providers[key] = {'detail': get_metrics_db(db, key), 'providers_l2': providers_details }
     
               
     return {
-        "name": manrs_data['name'], 
-        "country": manrs_data['country'],
-        "metrics": manrs_data['metrics'] if detail else {},
+        "detail":{
+            "name": manrs_data['name'],
+            "country": manrs_data['country'],
+            "metrics": manrs_data['metrics'] if detail else {},
+        },
         "providers": providers
     }
   

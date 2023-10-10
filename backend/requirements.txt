@@ -9,3 +9,6 @@ pydantic[dotenv]
 python-multipart
 tqdm
 fastapi-shell
+pandas
+fastapi==0.68.0
+pycountry

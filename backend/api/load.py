@@ -8,7 +8,7 @@ import json
 import requests
 
 # Créer le moteur de base de données SQLite
-SQLALCHEMY_DATABASE_URL = "sqlite:///./db/newdatabase.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///./../db/newdatabase.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 
 # Déclarer la base de données
@@ -25,7 +25,7 @@ def load_relationship_asn():
     print('Hello')
     
     # Charger le fichier dans un DataFrame Pandas
-    file_path = '../../manrs_2023-08/20230801.as-rel.txt'
+    file_path = '../../manrs_2023-09-29/20230901.as-rel.txt'
     df = pd.read_csv(file_path, sep='|', comment='#', header=None, names=['asn_1', 'asn_2', 'type'])
     
     # Convertir les valeurs en chaînes
@@ -39,7 +39,7 @@ def load_relationship_asn():
     # Ajouter les données à la base de données
     for data in data_list:
         relationship_asn = RelationshipAsn(**data)
-        relationship_asn_table = RelationshipAsnTable(**relationship_asn.model_dump())
+        relationship_asn_table = RelationshipAsnTable(**relationship_asn.__dict__)
         db.add(relationship_asn_table)
     db.commit()
 
@@ -48,7 +48,7 @@ def load_data_as_mapping():
     print('Hello')
     
     # Charger le fichier JSON dans un dictionnaire
-    with open('../../manrs_2023-08/ii.as-org.v01.2023-01.json', 'r') as file:
+    with open('../../manrs_2023-09-29/ii.as-org.v01.2023-012.json', 'r') as file:
         asorg_data = json.load(file)
     
     # Convertir le dictionnaire en DataFrame Pandas
@@ -97,7 +97,7 @@ def load_data_as_mapping():
 def load_categorized_asn():
     print('Hello')
     
-    category_df = pd.read_csv('../../manrs_2023-08/2023-05_categorized_ases.csv', dtype=str)
+    category_df = pd.read_csv('../../manrs_2023-09-29/2023-05_categorized_ases.csv', dtype=str)
     selected_columns = ['ASN', 'Category 1 - Layer 1', 'Category 1 - Layer 2']
     category_df = category_df.loc[:, selected_columns]
 

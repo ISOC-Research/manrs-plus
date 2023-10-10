@@ -9,7 +9,8 @@ router = APIRouter()
 
 @router.get("/get_providers")
 async def get_providers(
-    asn: str = Query(),
+    asn: str = Query(default="22"),
+    level_two: bool = Query(default=False),
     skip: int = Query(0),
     limit: int = Query(10),
     db: SessionLocal = Depends(get_db)
@@ -17,17 +18,26 @@ async def get_providers(
     if asn is None:
         raise HTTPException(status_code=403, detail="asn is required")
     
-    providers = get_providers_from_db(db, asn)
+    providers = get_providers_from_db(db, asn, level_two)
     
     return {"asn": asn, "providers": providers}
 
 @router.get("/get_categories")
 async def get_categories(
-
     db: SessionLocal = Depends(get_db)
 ):
     
     data = get_all_categories(db)
+    
+    return {"data": data}  
+
+
+@router.get("/get_countries")
+async def get_countries(
+    db: SessionLocal = Depends(get_db)
+):
+    
+    data = get_all_countries(db)
     
     return {"data": data}  
 
@@ -86,7 +96,7 @@ async def get_asns(
     
 @router.get("/get_siblings")
 async def get_sibligs(
-    asn: str = Query(),
+    asn: str = Query(default="22"),
     skip: int = Query(0),
     limit: int = Query(10),
     db: SessionLocal = Depends(get_db)
@@ -101,7 +111,7 @@ async def get_sibligs(
 
 @router.get("/get_rovs")
 async def get_rovs(
-    asn: str = Query(),
+    asn: str = Query(default="22"),
     skip: int = Query(0),
     limit: int = Query(10),
     db: SessionLocal = Depends(get_db)
@@ -109,14 +119,14 @@ async def get_rovs(
     if asn is None:
         raise HTTPException(status_code=403, detail="asn is required")
     
-    rov = get_rov_from_api(asn)
+    rov = get_rov_from_db(db, asn)
     
     return {"asn": asn, "rov": rov}    
         
         
 @router.get("/get_metrics_manrs")
 async def get_metrics_manrs(
-    asn: str = Query(),
+    asn: str = Query(default="22"),
     skip: int = Query(0),
     limit: int = Query(10),
     db: SessionLocal = Depends(get_db)
@@ -131,7 +141,7 @@ async def get_metrics_manrs(
 
 @router.get("/get_metrics")
 async def get_metrics(
-    asn: str = Query(),
+    asn: str = Query(default="22"),
     skip: int = Query(0),
     limit: int = Query(10),
     db: SessionLocal = Depends(get_db)
