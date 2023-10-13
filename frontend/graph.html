@@ -193,7 +193,11 @@
             hideLoading(); 
             json = convertData2(json);
             console.log(json);
-            treeBoxes('', json.tree);
+            for (const nodeId in json.tree) {
+                const nodeData = json.tree[nodeId];
+                treeBoxes('', nodeData);
+            }
+            
         });
     
     }

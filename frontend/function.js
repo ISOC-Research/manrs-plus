@@ -1,336 +1,158 @@
-function transformData(originalData) {
-    var transformedData = {
-        "nodes": [],
-        "links": []
-    };
-
-    // Créer un objet pour stocker les groupes de couleurs
-    var colorGroups = {};
-
-    // Parcourir les réseaux dans les données d'origine
-    for (var networkId in originalData.networks) {
-        var network = originalData.networks[networkId].detail;
-
-        // Générer un groupe de couleur unique pour ce réseau
-        var group = Object.keys(colorGroups).length + 1;
-        colorGroups[network.country] = group;
-
-        // Créer un nœud pour le réseau
-        var networkNode = {
-            "id": networkId,
-            "group": group,
-            "name": network.name,
-            "country": network.country,
-            "metrics": network.metrics,
-            "pieChart": [
-                { "color": group, "percent": 100 }
-            ]
-        };
-
-        transformedData.nodes.push(networkNode);
-
-        // Parcourir les fournisseurs de ce réseau
-        for (var providerId in originalData.networks[networkId].providers) {
-            var provider = originalData.networks[networkId].providers[providerId].detail;
-
-            // Générer un groupe de couleur unique pour ce réseau
-            var group = Object.keys(colorGroups).length + 1;
-            colorGroups[provider.country] = group;
-
-            // Créer un nœud pour le fournisseur
-            var providerNode = {
-                "id": providerId,
-                "group": group, // Groupes de couleurs différents pour les fournisseurs
-                "name": provider.name,
-                "country": provider.country,
-                "metrics": provider.metrics,
-                "pieChart": [
-                    { "color": group, "percent": 100 }
-                ]
-            };
-
-            transformedData.nodes.push(providerNode);
-
-            // Créer un lien entre le réseau et le fournisseur
-            transformedData.links.push({
-                "source": networkId,
-                "target": providerId
-            });
-        }
-    }
-
-    return transformedData;
-}
-
-
-function transformData2(data1) {
-    const data2 = {
-      tree: {
-        nodeName: "",
-        name: "",
-        type: "",
-        country: "",
-        filtering: "",
-        label: "",
-        link: {
-          name: "",
-          nodeName: "",
-          direction: ""
-        },
-        children: []
-      }
-    };
-  
-    // Fonction récursive pour parcourir data1 et construire data2
-    function traverse(node, parent) {
-      for (const key in node) {
-        if (key === "category") {
-          data2.tree.name = node[key];
-        } else if (key === "country") {
-          data2.tree.country = node[key];
-        } else if (key === "metrics") {
-          data2.tree.filtering = node[key].filtering;
-        } else if (key === "networks") {
-          for (const asn in node[key]) {
-            const asnData = node[key][asn];
-            const newNode = {
-              nodeName: asn,
-              name: asnData.detail.name,
-              type: "type1", // Vous pouvez personnaliser le type ici
-              country: asnData.detail.country,
-              filtering: asnData.detail.metrics.filtering,
-              label: `${asn}-${asnData.detail.name}`,
-              link: {
-                name: `Link ${asn}`,
-                nodeName: asn,
-                direction: "ASYN"
-              },
-              children: []
-            };
-  
-            // Appel récursif pour les fournisseurs (providers) de l'ASN
-            traverse(asnData.providers, newNode);
-  
-            parent.children.push(newNode);
-          }
-        }
-      }
-    }
-  
-    // Commencez la transformation en appelant traverse avec les données de départ
-    traverse(data1, data2.tree);
-  
-    return data2;
-  }
-
-
-function convertData(data1) {
-    const data2 = {
-      tree: {
-        nodeName: Object.keys(data1.networks)[0],
-        name: data1.networks[Object.keys(data1.networks)[0]].detail.name,
-        type: "type3",
-        country: data1.country,
-        filtering: data1.networks[Object.keys(data1.networks)[0]].detail.metrics.filtering,
-        label: `${Object.keys(data1.networks)[0]}-${data1.networks[Object.keys(data1.networks)[0]].detail.name}`,
-        link: {
-          name: `Link ${Object.keys(data1.networks)[0]}`,
-          nodeName: Object.keys(data1.networks)[0],
-          direction: "ASYN",
-        },
-        children: [],
-      },
-    };
-  
-    for (const providerId in data1.networks[Object.keys(data1.networks)[0]].providers) {
-      const provider = data1.networks[Object.keys(data1.networks)[0]].providers[providerId];
-      const providerNode = {
-        nodeName: providerId,
-        name: provider.detail.name,
-        type: "type1",
-        country: provider.detail.country,
-        filtering: provider.detail.metrics.filtering,
-        label: `${providerId}-${provider.detail.name}`,
-        link: {
-          name: `Link ${Object.keys(data1.networks)[0]} to ${providerId}`,
-          nodeName: providerId,
-          direction: "SYNC",
-        },
-      };
-      data2.tree.children.push(providerNode);
-    }
-  
-    return data2;
-  }
-
 function formatMetrics(metrics) {
   return `Filtering: ${metrics.filtering}\nCoordination: ${metrics.coordination}\nAntispoofing: ${metrics.antispoofing}\nIRR: ${metrics.irr}\nRPKI: ${metrics.rpki}\nROV: ${metrics.rov}`;
 }
 
 function convertData2(data1) {
-    const data2 = {
-      tree: {
-        nodeName: "",
-        name: "",
-        type: "type4",
-        country: data1.country,
-        category: data1.category,
-        filtering: "", 
-        coordination: "",
-        antispoofing: "",
-        irr: "",
-        rpki: "",
-        rov: "",
-        label: "",
-        link: {
-          name: "",
-          nodeName: "",
-          direction: "ASYN",
-        },
-        children: [],
-      },
-    };
-  
-    for (const networkId in data1.networks) {
-      const network = data1.networks[networkId];
-      const networkNode = {
+  const data2 = {
+    tree: {}
+  };
+
+  for (const networkId in data1.networks) {
+    const network = data1.networks[networkId];
+    const networkNode = {
+      nodeName: networkId,
+      name: network.detail.name,
+      type: "type3",
+      country: network.detail.country,
+      category: network.category,
+      filtering: network.detail.metrics.filtering,
+      coordination: network.detail.metrics.coordination,
+      antispoofing: network.detail.metrics.antispoofing,
+      irr: network.detail.metrics.irr,
+      rpki: network.detail.metrics.rpki,
+      rov: network.detail.metrics.rov,
+      label: formatMetrics(network.detail.metrics),
+      link: {
+        name: `Link ${networkId}`,
         nodeName: networkId,
-        name: network.detail.name,
-        type: "type3",
-        country: network.detail.country,
-        category: network.category,
-        filtering: network.detail.metrics.filtering,
-        coordination: network.detail.metrics.coordination,
-        antispoofing: network.detail.metrics.antispoofing,
-        irr: network.detail.metrics.irr,
-        rpki: network.detail.metrics.rpki,
-        rov: network.detail.metrics.rov,
-        label: formatMetrics(network.detail.metrics),
+        direction: "ASYN",
+      },
+      children: []
+    };
+
+    for (const providerId in network.providers) {
+      const provider = network.providers[providerId];
+      const providerNode = {
+        nodeName: providerId,
+        name: provider.detail.name,
+        type: "type2",
+        country: provider.detail.country,
+        category: "Provider",
+        filtering: provider.detail.metrics.filtering,
+        coordination: provider.detail.metrics.coordination,
+        antispoofing: provider.detail.metrics.antispoofing,
+        irr: provider.detail.metrics.irr,
+        rpki: provider.detail.metrics.rpki,
+        rov: provider.detail.metrics.rov,
+        label: `${provider.detail.metrics}`,
         link: {
-          name: `Link ${networkId}`,
-          nodeName: networkId,
-          direction: "ASYN",
-        },
-        children: [],
-      };
-  
-      for (const providerId in network.providers) {
-        const provider = network.providers[providerId];
-        const providerNode = {
+          name: `Link ${networkId} to ${providerId}`,
           nodeName: providerId,
-          name: provider.detail.name,
-          type: "type2",
-          country: provider.detail.country,
-          category: provider.category,
-          filtering: provider.detail.metrics.filtering,
-          coordination: provider.detail.metrics.coordination,
-          antispoofing: provider.detail.metrics.antispoofing,
-          irr: provider.detail.metrics.irr,
-          rpki: provider.detail.metrics.rpki,
-          rov: provider.detail.metrics.rov,
-          label: `${provider.detail.metrics}`,
+          direction: "SYNC",
+        },
+        children: []
+      };
+
+      for (const providerL2Id in provider.providers_l2) {
+        const providerL2 = provider.providers_l2[providerL2Id];
+        const providerNodeL2 = {
+          nodeName: providerL2Id,
+          name: providerL2.detail.name,
+          type: "type1",
+          country: providerL2.detail.country,
+          category: "Provider L2",
+          filtering: providerL2.detail.metrics.filtering,
+          coordination: providerL2.detail.metrics.coordination,
+          antispoofing: providerL2.detail.metrics.antispoofing,
+          irr: providerL2.detail.metrics.irr,
+          rpki: providerL2.detail.metrics.rpki,
+          rov: providerL2.detail.metrics.rov,
+          label: `${providerL2.detail.metrics}`,
           link: {
-            name: `Link ${networkId} to ${providerId}`,
-            nodeName: providerId,
+            name: `Link ${providerId} to ${providerL2Id}`,
+            nodeName: providerL2Id,
             direction: "SYNC",
           },
+          children: []
         };
-        for (const providerL2Id in network.providers.providers_l2) {
-          const provider_l2 = network.providers[providerL2Id];
-          const providerNodeL2 = {
-            nodeName: providerL2Id,
-            name: provider_l2.detail.name,
-            type: "type1",
-            country: provider_l2.detail.country,
-            category: provider_l2.category,
-            filtering: provider_l2.detail.metrics.filtering,
-            coordination: provider_l2.detail.metrics.coordination,
-            antispoofing: provider_l2.detail.metrics.antispoofing,
-            irr: provider_l2.detail.metrics.irr,
-            rpki: provider_l2.detail.metrics.rpki,
-            rov: provider_l2.detail.metrics.rov,
-            label: `${provider_l2.detail.metrics}`,
-            link: {
-              name: `Link ${providerId} to ${providerL2Id}`,
-              nodeName: providerL2Id,
-              direction: "SYNC",
-            },
-          };
-          providerNode.children.push(providerNodeL2);
-        }
-    
-        networkNode.children.push(providerNode);
+        providerNode.children.push(providerNodeL2);
       }
-  
-      data2.tree.children.push(networkNode);
+
+      networkNode.children.push(providerNode);
     }
-  
-    return data2;
+
+    data2.tree[networkId] = networkNode;
   }
 
+  return data2;
+}
+
+  
+
 function convertModelToSankeyData2(model) {
-    const nodesMap = new Map();
-    const nodes = [];
-    const links = [];
-  
-    // Générer les nœuds pour les réseaux et les fournisseurs
-    for (const networkId in model.networks) {
-      const network = model.networks[networkId];
-      const networkASN = network.detail.name || networkId; // Utilisez ASN comme identifiant de nœud si le nom est null
-  
-      if (!nodesMap.has(networkASN)) {
-        nodesMap.set(networkASN, nodes.length);
-        nodes.push({ name: networkASN });
+  const nodesMap = new Map();
+  const nodes = [];
+  const links = [];
+
+  // Générer les nœuds pour les réseaux et les fournisseurs
+  for (const networkId in model.networks) {
+    const network = model.networks[networkId];
+    const networkASN = network.detail.name || networkId; // Utilisez ASN comme identifiant de nœud si le nom est null
+
+    if (!nodesMap.has(networkASN)) {
+      nodesMap.set(networkASN, nodes.length);
+      nodes.push({ name: networkASN, label: formatMetrics(network.detail.metrics), level: 1 });
+    }
+
+    for (const providerId in network.providers) {
+      const provider = network.providers[providerId];
+      const providerASN = provider.detail.name || providerId; // Utilisez ASN comme identifiant de nœud si le nom est null
+
+      if (!nodesMap.has(providerASN)) {
+        nodesMap.set(providerASN, nodes.length);
+        nodes.push({ name: providerASN, label: formatMetrics(provider.detail.metrics), level: 2 });
       }
-  
-      for (const providerId in network.providers) {
-        const provider = network.providers[providerId];
-        const providerASN = provider.detail.name || providerId; // Utilisez ASN comme identifiant de nœud si le nom est null
-  
-        if (!nodesMap.has(providerASN)) {
-          nodesMap.set(providerASN, nodes.length);
-          nodes.push({ name: providerASN });
-        }
-  
-        // Calculer la valeur en fonction du nombre de nœuds dans le réseau
-        const networkNodeIndex = nodesMap.get(networkASN);
-        const networkNode = nodes[networkNodeIndex];
-        const networkSize = nodes.filter(node => node.name === networkASN).length;
-  
-        links.push({
-          source: nodesMap.get(networkASN),
-          target: nodesMap.get(providerASN),
-          value: 2
-        });
-  
-        // Vérifier s'il existe des fournisseurs de niveau 2
-        if (provider.providers_l2 && Object.keys(provider.providers_l2).length > 0) {
-          for (const providerL2Id in provider.providers_l2) {
-            const providerL2 = provider.providers_l2[providerL2Id];
-            const providerL2ASN = providerL2.detail.name || providerL2Id; // Utilisez ASN comme identifiant de nœud si le nom est null
-  
-            if (!nodesMap.has(providerL2ASN)) {
-              nodesMap.set(providerL2ASN, nodes.length);
-              nodes.push({ name: providerL2ASN });
-            }
-  
-            // Calculer la valeur en fonction du nombre de nœuds dans le réseau de niveau 2
-            const providerNodeIndex = nodesMap.get(providerASN);
-            const providerNode = nodes[providerNodeIndex];
-            const providerSize = nodes.filter(node => node.name === providerASN).length;
-  
-            links.push({
-              source: nodesMap.get(providerASN),
-              target: nodesMap.get(providerL2ASN),
-              value: 2
-            });
+
+      // Calculer la valeur en fonction du nombre de nœuds dans le réseau
+      const networkNodeIndex = nodesMap.get(networkASN);
+      const networkNode = nodes[networkNodeIndex];
+      const networkSize = nodes.filter(node => node.name === networkASN).length;
+
+      links.push({
+        source: nodesMap.get(networkASN),
+        target: nodesMap.get(providerASN),
+        value: 2
+      });
+
+      // Vérifier s'il existe des fournisseurs de niveau 2
+      if (provider.providers_l2 && Object.keys(provider.providers_l2).length > 0) {
+        for (const providerL2Id in provider.providers_l2) {
+          const providerL2 = provider.providers_l2[providerL2Id];
+          const providerL2ASN = providerL2.detail.name || providerL2Id; // Utilisez ASN comme identifiant de nœud si le nom est null
+
+          if (!nodesMap.has(providerL2ASN)) {
+            nodesMap.set(providerL2ASN, nodes.length);
+            nodes.push({ name: providerL2ASN, label: formatMetrics(providerL2.detail.metrics), level: 3 });
           }
+
+          // Calculer la valeur en fonction du nombre de nœuds dans le réseau de niveau 2
+          const providerNodeIndex = nodesMap.get(providerASN);
+          const providerNode = nodes[providerNodeIndex];
+          const providerSize = nodes.filter(node => node.name === providerASN).length;
+
+          links.push({
+            source: nodesMap.get(providerASN),
+            target: nodesMap.get(providerL2ASN),
+            value: 2
+          });
         }
       }
     }
-  
-    return { nodes, links };
   }
+
+  return { nodes, links };
+}
+
 
 
 
