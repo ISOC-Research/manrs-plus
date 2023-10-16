@@ -136,14 +136,28 @@ def get_providers_from_db(db, asn, level_two):
 def get_metrics_db(db: Session, asn: str):
     metrics = get_manrs_metrics_by_asn(db, asn)
     rov = get_rov_from_db(db, asn)
+    filtering = metrics.filtering if hasattr(metrics, 'filtering') else 0
+    coordination = metrics.coordination if hasattr(metrics, 'coordination') else 0
+    antispoofing = metrics.antispoofing if hasattr(metrics, 'antispoofing') else 0
+    irr = metrics.irr if hasattr(metrics, 'irr') else 0
+    rpki = metrics.rpki if hasattr(metrics, 'rpki') else 0
+    rov = rov if rov is not None else 0
+
+    filtering = filtering or 0
+    coordination = coordination or 0
+    antispoofing = antispoofing or 0
+    irr = irr or 0
+    rpki = rpki or 0
+    rov = rov or 0
    
     data = {
-        "filtering": metrics.filtering if hasattr(metrics, 'filtering') else None,
-        "coordination": metrics.coordination if hasattr(metrics, 'coordination') else None,
-        "antispoofing": metrics.antispoofing if hasattr(metrics, 'antispoofing') else None,
-        "irr": metrics.irr if hasattr(metrics, 'irr') else None,
-        "rpki": metrics.rpki if hasattr(metrics, 'rpki') else None,
-        "rov": rov if rov is not None else None
+        "filtering": filtering,
+        "coordination": coordination,
+        "antispoofing": antispoofing,
+        "irr": irr,
+        "rpki": rpki,
+        "rov": rov,
+        "score": float((filtering + coordination + antispoofing + irr + rpki + rov))
     }
     
     return {

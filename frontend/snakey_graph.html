@@ -246,9 +246,9 @@
             hideLoading(); 
             graph = convertModelToSankeyData2(graph);
             var colors = {
-                level1: "#1f77b4", // Bleu
-                level2: "#2ca02c", // green
-                level3: "#d62728"  // Red
+                level2: "#1f77b4", // Bleu
+                level3: "#2ca02c", // green
+                level1: "#d62728"  // Red
             };
 
             sankey
@@ -289,16 +289,16 @@
                 .attr("width", sankey.nodeWidth())
                 .style("fill", function(d) { 
                         //return d.color = color(d.name.replace(/ .*/, ""));
-                    if (d.level === 1) {
-                        return colors.level1;
-                    } else if (d.level === 2) {
-                        return colors.level2;
-                    }else if (d.level === 2) {
-                        return colors.level2;
-                    } else {
-                        // Couleur par défaut pour les autres niveaux
-                        return "#000";
-                    }
+                        console.log(d.score);
+                        var score = d.score;
+                        switch (true) {
+                            case (score >= 0 && score < 2):
+                                return colors.level1; // Color for the interval 0-2
+                            case (score >= 2 && score < 4):
+                                return colors.level2; // Color for the interval 2-4
+                            case (score >= 4 && score < 6):
+                                return colors.level3; // Color for the interval 4-6
+                        }
                 })
                 .style("stroke", function(d) { 
                     return d3.rgb(d.color).darker(2); })
