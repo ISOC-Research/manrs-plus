@@ -180,7 +180,7 @@
 
     var margin = {top: 10, right: 10, bottom: 10, left: 10},
         width = 1000 - margin.left - margin.right,
-        height = 2000 - margin.top - margin.bottom;
+        height = 600 - margin.top - margin.bottom;
 
     var formatNumber = d3.format(",.0f"),    // zero decimal places
         format = function(d) { return formatNumber(d) + " " + units; },
@@ -246,8 +246,8 @@
             hideLoading(); 
             graph = convertModelToSankeyData2(graph);
             var colors = {
-                level2: "#1f77b4", // Bleu
                 level3: "#2ca02c", // green
+                level2: "#ff8000", // orange
                 level1: "#d62728"  // Red
             };
 
@@ -296,7 +296,7 @@
                                 return colors.level1; // Color for the interval 0-2
                             case (score >= 2 && score < 4):
                                 return colors.level2; // Color for the interval 2-4
-                            case (score >= 4 && score < 6):
+                            case (score >= 4 && score <= 6):
                                 return colors.level3; // Color for the interval 4-6
                         }
                 })

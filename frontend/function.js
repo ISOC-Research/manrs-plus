@@ -101,7 +101,7 @@ function convertModelToSankeyData2(model) {
 
     if (!nodesMap.has(networkASN)) {
       nodesMap.set(networkASN, nodes.length);
-      nodes.push({ name: networkASN, label: formatMetrics(network.detail.metrics), score: network.detail.metrics.score });
+      nodes.push({ name: networkASN +" ("+ network.detail.country+")", label: formatMetrics(network.detail.metrics), score: network.detail.metrics.score });
     }
 
     for (const providerId in network.providers) {
@@ -110,7 +110,7 @@ function convertModelToSankeyData2(model) {
 
       if (!nodesMap.has(providerASN)) {
         nodesMap.set(providerASN, nodes.length);
-        nodes.push({ name: providerASN, label: formatMetrics(provider.detail.metrics), score: network.detail.metrics.score });
+        nodes.push({ name: providerASN +" ("+ provider.detail.country+")", label: formatMetrics(provider.detail.metrics), score: network.detail.metrics.score });
       }
 
       // Calculer la valeur en fonction du nombre de nœuds dans le réseau
@@ -132,7 +132,7 @@ function convertModelToSankeyData2(model) {
 
           if (!nodesMap.has(providerL2ASN)) {
             nodesMap.set(providerL2ASN, nodes.length);
-            nodes.push({ name: providerL2ASN, label: formatMetrics(providerL2.detail.metrics), score: network.detail.metrics.score });
+            nodes.push({ name: providerL2ASN +" ("+ providerL2.detail.country+")", label: formatMetrics(providerL2.detail.metrics), score: network.detail.metrics.score });
           }
 
           // Calculer la valeur en fonction du nombre de nœuds dans le réseau de niveau 2
