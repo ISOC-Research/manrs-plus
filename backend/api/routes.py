@@ -91,7 +91,30 @@ async def get_asns(
     else:
        return {
            "data": {}
+       }
+
+@router.get("/get_asn")
+async def get_asn(
+    asn: str = Query(None),
+    detail: bool = Query(None),
+    level_two: bool = Query(default=False),
+    skip: int = Query(0),
+    limit: int = Query(10),
+    db: SessionLocal = Depends(get_db)
+):
+    
+    if asn:
+        asns_metrics = {}
+        
+        asns_metrics[asn]=get_providers_data(db, asn, detail, level_two)
+        return {
+                "networks": asns_metrics,
+               }
+    else:
+       return {
+           "data": {}
        } 
+    
     
     
 @router.get("/get_siblings")
@@ -168,3 +191,60 @@ async def get_metrics(
         "country": metrics.country,
         "metrics": data
     }    
+
+
+@router.get("/get_asns_by_provider")
+async def get_asns(
+    category: str = Query(None),
+    country: str = Query(None),
+    detail: bool = Query(None),
+    level_two: bool = Query(default=False),
+    skip: int = Query(0),
+    limit: int = Query(10),
+    db: SessionLocal = Depends(get_db)
+):
+    
+    if category and country:
+        asns = get_asns_by_country_and_category(db, country, category)
+        
+        asns_metrics = {}
+        for asn in asns:
+            asns_metrics[asn]=get_providers_data(db, asn, detail, level_two)
+
+        results = {
+                "category": category,
+                "country": country,
+                "networks": asns_metrics,
+                "count": len(asns_metrics)
+               }
+        
+        return transform_data(results)
+    elif category:
+        asns = get_asns_by_category(db, category)
+        asns_metrics = {}
+        # Perform pagination
+        asns = asns[skip : skip + limit]
+        
+        for asn in asns:
+            asns_metrics[asn]=get_providers_data(db, asn, detail, level_two)
+        results = {
+                "category": category,
+                "networks": asns_metrics,
+                "count": len(asns_metrics)
+               }  
+        return transform_data(results)
+    elif country:
+        asns = get_asns_by_country(db, country)
+        asns_metrics = {}
+        for asn in asns:
+            asns_metrics[asn]=get_providers_data(db, asn, detail, level_two)
+        results = {
+                "country": country,
+                "networks": asns_metrics,
+                "count": len(asns_metrics)
+               }    
+        return transform_data(results)
+    else:
+       return {
+           "data": {}
+       }

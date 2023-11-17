@@ -198,3 +198,29 @@ def get_providers_level_two_data(db: Session, providers, detail: bool):
         
                 
     return providers_l2
+
+
+def transform_data(existing_data):
+    # Créez une structure pour stocker les données transformées
+    transformed_data = {
+        "category": existing_data.get("category", ""),
+        "country": existing_data.get("country", ""),
+        "networks": {},
+        "count": existing_data.get("count", 0)
+    }
+
+    providers_l2 = {}
+    providers = {}
+    asns = {}
+
+    for data in existing_data['networks'].items():
+        
+        if data[1]['providers']:
+            for data2 in data[1]['providers'].items():
+                providers[data2[0]] = data2[1]['details']
+                print(data[1]) 
+        else:
+            asns[data[0]] = data[1]['detail']
+
+
+    return transformed_data
