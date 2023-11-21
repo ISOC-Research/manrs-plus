@@ -22,7 +22,7 @@ function convertData2(data1) {
     }
 
     const networkNode = {
-      nodeName: `ASN: ${networkId}`,
+      nodeName: `ASN-COUNTRY: ${networkId}-${convertCountry(network.detail.country)}`,
       name: network.detail.name,
       type: type,
       country: network.detail.country,
@@ -33,6 +33,7 @@ function convertData2(data1) {
       irr: network.detail.metrics.irr,
       rpki: network.detail.metrics.rpki,
       rov: network.detail.metrics.rov,
+      score: score,
       label: formatMetrics(network.detail.metrics),
       link: {
         name: `Link ${networkId}`,
@@ -55,7 +56,7 @@ function convertData2(data1) {
         type = "type3"; // Color for the interval 4-6
       }
       const providerNode = {
-        nodeName: `ASN: ${providerId}`,
+        nodeName: `ASN-COUNTRY: ${providerId}-${convertCountry(provider.detail.country)}`,
         name: provider.detail.name,
         type: type,
         country: provider.detail.country,
@@ -66,6 +67,7 @@ function convertData2(data1) {
         irr: provider.detail.metrics.irr,
         rpki: provider.detail.metrics.rpki,
         rov: provider.detail.metrics.rov,
+        score: score,
         label: formatMetrics(provider.detail.metrics),
         link: {
           name: `Link ${networkId} to ${providerId}`,
@@ -88,7 +90,7 @@ function convertData2(data1) {
           type = "type3"; // Color for the interval 4-6
         }
         const providerNodeL2 = {
-          nodeName: `ASN: ${providerL2Id}`,
+          nodeName: `ASN-COUNTRY: ${providerL2Id}-${convertCountry(providerL2.detail.country)}`,
           name: providerL2.detail.name,
           type: type,
           country: providerL2.detail.country,
@@ -99,6 +101,7 @@ function convertData2(data1) {
           irr: providerL2.detail.metrics.irr,
           rpki: providerL2.detail.metrics.rpki,
           rov: providerL2.detail.metrics.rov,
+          score: score,
           label: formatMetrics(providerL2.detail.metrics),
           link: {
             name: `Link ${providerId} to ${providerL2Id}`,
@@ -186,7 +189,7 @@ function convertModelToSankeyData2(model) {
 
 
 
-  var nameToCode = {
+var nameToCode = {
     "Afghanistan": "AF",
     "Åland Islands": "AX",
     "Albania": "AL",

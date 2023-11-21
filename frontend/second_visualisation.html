@@ -416,7 +416,7 @@ License: For each use you must have a valid license purchased only from above li
 					hideLoading(); 
 					hidenLogo();
 					console.log(json);
-					document.getElementById('number_of_asn').innerText = json.networks['1'].detail.metrics.score;
+					document.getElementById('number_of_asn').innerText = json.networks[asn_number].detail.metrics.score;
 					json = convertData2(json);
 					
 					if (Object.keys(json.tree).length === 0) {
