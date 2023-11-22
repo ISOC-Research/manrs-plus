@@ -45,8 +45,8 @@ function treeBoxes(urlService, jsonData)
 		width = 800 - margin.right - margin.left,
 		height = 400 - margin.top - margin.bottom;
 	
-	var rectNode = { width : 120, height : 45, textMargin : 5 },
-		tooltip = { width : 200, height : 80, textMargin : 5 };
+	var rectNode = { width : 300, height : 40, textMargin : 5 },
+		tooltip = { width : 500, height : 150, textMargin : 5 };
 	var i = 0,
 		duration = 750,
 		root;
@@ -214,9 +214,7 @@ function treeBoxes(urlService, jsonData)
 					return '<div style="width: '
 							+ (rectNode.width - rectNode.textMargin * 10) + 'px; height: '
 							+ (rectNode.height - rectNode.textMargin * 10) + 'px;" class="node-text wordwrap">'
-							+ '<b>' + d.nodeName + '</b><br><br>'
-							+ '<b>Country: </b>' + d.country + '<br>'
-                            + '<b>Name: </b>' + d.name + '<br>'
+							+ '<b>' + d.nodeName + '</b><br>'
 							+ '</div>';
 				})
 		.on('mouseover', function(d) {
@@ -257,6 +255,18 @@ function treeBoxes(urlService, jsonData)
 		.style('fill', 'white')
 		.append("tspan")
 		.text(function(d) {return 'Name: ' + d.name;})
+		.append("tspan")
+		.attr('x', rectNode.width / 2 + tooltip.textMargin)
+		.attr('dy', '1.5em') // Déplacez vers le bas d'une ligne
+		.text(function(d) {
+			return 'Category: ' + d.category;
+		})
+		.append("tspan")
+		.attr('x', rectNode.width / 2 + tooltip.textMargin)
+		.attr('dy', '1.5em') // Déplacez vers le bas d'une ligne
+		.text(function(d) {
+			return 'Score: ' + d.score;
+		})
 		.append("tspan")
 		.attr('x', rectNode.width / 2 + tooltip.textMargin)
 		.attr('dy', '1.5em') // Déplacez vers le bas d'une ligne

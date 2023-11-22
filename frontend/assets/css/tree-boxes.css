@@ -80,7 +80,7 @@
 }
 
 .node-text {
-	font: 7px sans-serif;
+	font: 9px sans-serif;
 	color: white;
 }
 
@@ -91,7 +91,7 @@
 
 .tooltip-text {
 	visibility: hidden;
-	font: 7px sans-serif;
+	font: 9px sans-serif;
 	color: white;
 	display: block;
  	padding: 5px;
