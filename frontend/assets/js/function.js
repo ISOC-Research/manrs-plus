@@ -2,6 +2,70 @@ function formatMetrics(metrics) {
   return `Filtering: ${metrics.filtering}\nCoordination: ${metrics.coordination}\nAntispoofing: ${metrics.antispoofing}\nIRR: ${metrics.irr}\nRPKI: ${metrics.rpki}\nROV: ${metrics.rov}\nSCORE: ${metrics.score}`;
 }
 
+function filteringColor(filtering) {
+  if (filtering <= 1.5 ) {
+    return `<div><span class="fw-bold">F:</span> <i class="bi bi-circle-fill text-success"></i></div>`
+  }else if (filtering > 1.5 && filtering < 5) {
+    return `<div><span class="fw-bold">F:</span> <i class="bi bi-circle-fill text-warning"></i></div>`
+  }else if (filtering >= 5) {
+    return `<div><span class="fw-bold">F:</span> <i class="bi bi-circle-fill text-danger"></i></div>`
+  }
+}
+
+function antispoofingColor(antispoofing) {
+  if (antispoofing == 0 ) {
+    return `<div><span class="fw-bold">A:</span> <i class="bi bi-circle-fill text-success"></i></div>`
+  }else if (antispoofing == 0.5) {
+    return `<div><span class="fw-bold">A:</span> <i class="bi bi-circle-fill text-warning"></i></div>`
+  }else if (antispoofing == 1) {
+    return `<div><span class="fw-bold">A:</span> <i class="bi bi-circle-fill text-danger"></i></div>`
+  }
+}
+
+function coordinationColor(coordination) {
+  if (coordination == 0 ) {
+    return `<div><span class="fw-bold">C:</span> <i class="bi bi-circle-fill text-success"></i></div>`
+  }else if (coordination == 1) {
+    return `<div><span class="fw-bold">C:</span> <i class="bi bi-circle-fill text-danger"></i></div>`
+  }
+}
+
+function irrColor(irr) {
+  if (irr < 0.1 ) {
+    return `<div><span class="fw-bold">IRR:</span> <i class="bi bi-circle-fill text-success"></i></div>`
+  }else if (irr >= 0.1 && irr <= 0.5) {
+    return `<div><span class="fw-bold">IRR:</span> <i class="bi bi-circle-fill text-warning"></i></div>`
+  }else if (irr > 0.5) {
+    return `<div><span class="fw-bold">IRR:</span> <i class="bi bi-circle-fill text-danger"></i></div>`
+  }
+}
+
+function rpkiColor(rpki) {
+  if (rpki < 0.1 ) {
+    return `<div><span class="fw-bold">RPKI:</span> <i class="bi bi-circle-fill text-success"></i></div>`
+  }else if (rpki >= 0.1 && rpki <= 0.5) {
+    return `<div><span class="fw-bold">RPKI:</span> <i class="bi bi-circle-fill text-warning"></i></div>`
+  }else if (rpki > 0.5) {
+    return `<div><span class="fw-bold">RPKI:</span> <i class="bi bi-circle-fill text-danger"></i></div>`
+  }
+}
+function raccourcirTexte(texte, limiteMots) {
+  if (texte == null) {
+
+    return texte = ' ';
+  }
+  
+  var mots = texte.split(' ');
+  
+  if (mots.length > limiteMots) {
+      mots = mots.slice(0, limiteMots);
+
+      texte = mots.join(' ') + '...';
+  }
+
+  return texte;
+}
+
 function convertData2(data1) {
   const data2 = {
     tree: {}
@@ -20,9 +84,9 @@ function convertData2(data1) {
     } else if (score >= 4 && score <= 6) {
       type = "type3"; // Color for the interval 4-6
     }
-
+   
     const networkNode = {
-      nodeName: `ASN-COUNTRY: ${networkId}-${convertCountry(network.detail.country)}`,
+      nodeName: `AS ${networkId}-${raccourcirTexte(network.detail.name, 2)} `,
       name: network.detail.name,
       type: type,
       country: network.detail.country,
@@ -32,6 +96,12 @@ function convertData2(data1) {
       antispoofing: network.detail.metrics.antispoofing,
       irr: network.detail.metrics.irr,
       rpki: network.detail.metrics.rpki,
+      rov: network.detail.metrics.rov,
+      colorFiltering: filteringColor(network.detail.metrics.filtering),
+      colorCoordination: coordinationColor(network.detail.metrics.coordination),
+      colorAntispoofing: antispoofingColor(network.detail.metrics.antispoofing),
+      colorIrr: irrColor(network.detail.metrics.irr),
+      colorRpki: rpkiColor(network.detail.metrics.rpki),
       rov: network.detail.metrics.rov,
       score: score,
       label: formatMetrics(network.detail.metrics),
@@ -56,7 +126,7 @@ function convertData2(data1) {
         type = "type3"; // Color for the interval 4-6
       }
       const providerNode = {
-        nodeName: `ASN-COUNTRY: ${providerId}-${convertCountry(provider.detail.country)}`,
+        nodeName: `AS ${providerId}-${raccourcirTexte(provider.detail.country, 2)} `,
         name: provider.detail.name,
         type: type,
         country: provider.detail.country,
@@ -67,6 +137,11 @@ function convertData2(data1) {
         irr: provider.detail.metrics.irr,
         rpki: provider.detail.metrics.rpki,
         rov: provider.detail.metrics.rov,
+        colorFiltering: filteringColor(provider.detail.metrics.filtering),
+        colorCoordination: coordinationColor(provider.detail.metrics.coordination),
+        colorAntispoofing: antispoofingColor(provider.detail.metrics.antispoofing),
+        colorIrr: irrColor(provider.detail.metrics.irr),
+        colorRpki: rpkiColor(provider.detail.metrics.rpki),
         score: score,
         label: formatMetrics(provider.detail.metrics),
         link: {
@@ -90,7 +165,7 @@ function convertData2(data1) {
           type = "type3"; // Color for the interval 4-6
         }
         const providerNodeL2 = {
-          nodeName: `ASN-COUNTRY: ${providerL2Id}-${convertCountry(providerL2.detail.country)}`,
+          nodeName: `AS ${providerL2Id}-${raccourcirTexte(providerL2.detail.country, 2)} `,
           name: providerL2.detail.name,
           type: type,
           country: providerL2.detail.country,
@@ -101,6 +176,11 @@ function convertData2(data1) {
           irr: providerL2.detail.metrics.irr,
           rpki: providerL2.detail.metrics.rpki,
           rov: providerL2.detail.metrics.rov,
+          colorFiltering: filteringColor(providerL2.detail.metrics.filtering),
+          colorCoordination: coordinationColor(providerL2.detail.metrics.coordination),
+          colorAntispoofing: antispoofingColor(providerL2.detail.metrics.antispoofing),
+          colorIrr: irrColor(providerL2.detail.metrics.irr),
+          colorRpki: rpkiColor(providerL2.detail.metrics.rpki),
           score: score,
           label: formatMetrics(providerL2.detail.metrics),
           link: {

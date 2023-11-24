@@ -32,7 +32,7 @@ function treeBoxes(urlService, jsonData)
 		green = '#5cb85c',
 		yellow = '#f0ad4e',
 		blueText = '#4ab1eb',
-		purple = '#9467bd';
+		purple = '#5e6360';
 
 	var margin = {
 					top : 0,
@@ -99,11 +99,11 @@ function treeBoxes(urlService, jsonData)
 			maxDepth++;
 			currentLevel.forEach(function(node) {
 				if (node.type == 'type1')
-					node.color = blue;
+					node.color = purple;
 				if (node.type == 'type2')
-					node.color = green;
+					node.color = purple;
 				if (node.type == 'type3')
-					node.color = yellow;
+					node.color = purple;
 				if (node.type == 'type4')
 					node.color = purple;
 				});
@@ -211,11 +211,28 @@ function treeBoxes(urlService, jsonData)
 							: (rectNode.height - rectNode.textMargin * 2)
 				})
 		.append('xhtml').html(function(d) {
-					return '<div style="width: '
-							+ (rectNode.width - rectNode.textMargin * 10) + 'px; height: '
-							+ (rectNode.height - rectNode.textMargin * 10) + 'px;" class="node-text wordwrap">'
-							+ '<b>' + d.nodeName + '</b><br>'
-							+ '</div>';
+					var country = d.country ? d.country.toLowerCase() : '';
+					return '<div style="width: ' +
+					(rectNode.width - rectNode.textMargin * 10) + 'px; height: ' +
+					(rectNode.height - rectNode.textMargin * 10) + 'px;" class="node-text wordwrap">' +
+					'<b>' + d.nodeName + '</b>' +
+					+
+    (country ?
+        ` <img
+            src="https://flagcdn.com/16x12/${country}.png"
+            srcset="https://flagcdn.com/32x24/${country}.png 2x,
+                https://flagcdn.com/48x36/${country}.png 3x"
+            width="16"
+            height="12"
+            alt="${country}"><br>` :
+        '')  +
+					`<div class="row">
+						<div class="col-md-2">${d.colorFiltering}</div>
+						<div class="col-md-2">${d.colorCoordination}</div>
+						<div class="col-md-4">${d.colorIrr}</div>
+						<div class="col-md-4">${d.colorRpki}</div>
+					</div>`
+				'</div>';
 				})
 		.on('mouseover', function(d) {
 			$('#nodeInfoID' + d.id).css('visibility', 'visible');

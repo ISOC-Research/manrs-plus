@@ -315,6 +315,7 @@ License: For each use you must have a valid license purchased only from above li
 								<div id="logo" class="text-center">
 									<img src="assets/media/logos/manrs1.png" width="300px" alt="MANRS">
 								</div>
+								
 								<!--begin::About card-->
 								<div class="card">
 									<!--begin::Body-->
@@ -439,7 +440,6 @@ License: For each use you must have a valid license purchased only from above li
 					hidenLogo();
 					document.getElementById('number_of_asn').innerText = json.count;
 					json = convertData2(json);
-					console.log(json);
 					if (Object.keys(json.tree).length === 0) {
     					showLogo();
 					}
