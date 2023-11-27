@@ -33,10 +33,16 @@
 }
 
 .node {
-	cursor: pointer;
+	/*border:rgba(221, 27, 27, 0.7);*/
+	/*cursor: pointer;*/
 }
 
 .node-rect {
+	
+}
+
+.rect{
+	
 }
 
 .node-rect-closed {
@@ -80,7 +86,7 @@
 }
 
 .node-text {
-	font: 9px sans-serif;
+	font: 10px sans-serif;
 	color: white;
 }
 

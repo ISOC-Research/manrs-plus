@@ -102,7 +102,7 @@ License: For each use you must have a valid license purchased only from above li
 									</span>
 									<div class="menu-sub menu-sub-accordion menu-active-bg">
 										<div class="menu-item">
-											<a class="menu-link active" href="first_visualisation.html">
+											<a class="menu-link " href="first_visualisation.html">
 												<span class="menu-bullet">
 													<span class="bullet bullet-dot"></span>
 												</span>
@@ -110,7 +110,7 @@ License: For each use you must have a valid license purchased only from above li
 											</a>
 										</div>
 										<div class="menu-item">
-											<a class="menu-link" href="second_visualisation.html">
+											<a class="menu-link active" href="second_visualisation.html">
 												<span class="menu-bullet">
 													<span class="bullet bullet-dot"></span>
 												</span>
@@ -268,36 +268,47 @@ License: For each use you must have a valid license purchased only from above li
 						</div>
 						<!--end::Toolbar-->
 						<!--begin::Post-->
-						<div class="">
-							<div class="row justify-content-center">
-								<div class="col-lg-2 mb-4">
-									<!--begin::Item-->
-									<div class="d-flex align-items-center bg-light-success rounded p-5 mb-7">
-										<!--begin::Icon-->
-										<span class="svg-icon svg-icon-warning me-5">
-											<!--begin::Svg Icon | path: icons/duotune/abstract/abs027.svg-->
-											<span class="svg-icon svg-icon-1">
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-													<path opacity="0.3" d="M21.25 18.525L13.05 21.825C12.35 22.125 11.65 22.125 10.95 21.825L2.75 18.525C1.75 18.125 1.75 16.725 2.75 16.325L4.04999 15.825L10.25 18.325C10.85 18.525 11.45 18.625 12.05 18.625C12.65 18.625 13.25 18.525 13.85 18.325L20.05 15.825L21.35 16.325C22.35 16.725 22.35 18.125 21.25 18.525ZM13.05 16.425L21.25 13.125C22.25 12.725 22.25 11.325 21.25 10.925L13.05 7.62502C12.35 7.32502 11.65 7.32502 10.95 7.62502L2.75 10.925C1.75 11.325 1.75 12.725 2.75 13.125L10.95 16.425C11.65 16.725 12.45 16.725 13.05 16.425Z" fill="currentColor" />
-													<path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="currentColor" />
-												</svg>
-											</span>
-											<!--end::Svg Icon-->
-										</span>
-										<!--end::Icon-->
-										<!--begin::Title-->
-										<div class="flex-grow-1 me-2">
-											<a href="#" class="fw-bolder text-gray-800 text-hover-primary fs-6">Score</a>
-											
+						
+						<div class="card container" >
+							<div class="row">
+								<div class="col p-2" style="border-right: 1px solid;">
+									<h4 class="text-center">ROV</h4>
+									<div class="row text-center">
+										<div class="col" data-bs-toggle="tooltip" data-bs-html="true" title="<b>Conforming to MANRS</b>">
+											<div><span class="fw-bold"> </span> <i class="bi bi-check-circle text-success"></i> Ready</div>
 										</div>
-										<!--end::Title-->
-										<!--begin::Lable-->
-										<span class="fw-bolder text-success py-1"><span id="number_of_asn"></span></span>
-										<!--end::Lable-->
+										<div class="col" data-bs-toggle="tooltip" data-bs-html="true" title="<b>Is not MANRS compliant</b>">
+											<div><span class="fw-bold"></span> <i class="bi bi-x-circle text-warning"></i> Lagging</div>
+										</div>
 									</div>
+								  </div>
+							  <div class="col p-2" style="border-right: 1px solid;">
+								<h4 class="text-center">Filtering</h4>
+								<div class="row text-center">
+									<div class="col">
+										<div><span class="fw-bold"> </span> <i class="bi bi-circle-fill text-success"></i> Ready</div>
+									</div>
+									<div class="col"><div><span class="fw-bold"></span> <i class="bi bi-circle-fill text-warning"></i> Aspiring</div></div>
+									<div class="col"><div><span class="fw-bold"></span> <i class="bi bi-circle-fill text-danger"></i> Lagging</div></div>
 								</div>
+							  </div>
+							  <div class="col p-2" style="border-right: 1px solid;">
+								<h4 class="text-center">Coordination</h4>
+								<div class="row text-center">
+									<div class="col"><div><span class="fw-bold"> </span> <i class="bi bi-circle-fill text-success"></i> Ready</div></div>
+									<div class="col"><div><span class="fw-bold"></span> <i class="bi bi-circle-fill text-danger"></i> Lagging</div></div>
+								</div>
+							  </div>
+							  <div class="col p-2" >
+								<h4 class="text-center">IRR/RPKI</h4>
+								<div class="row text-center">
+									<div class="col"><div><span class="fw-bold"> </span> <i class="bi bi-circle-fill text-success"></i> Ready</div></div>
+									<div class="col"><div><span class="fw-bold"></span> <i class="bi bi-circle-fill text-warning"></i> Aspiring</div></div>
+									<div class="col"><div><span class="fw-bold"></span> <i class="bi bi-circle-fill text-danger"></i> Lagging</div></div>
+								</div>
+							  </div>
+							  
 							</div>
-									<!--end::Item-->
 						</div>
 						<div id="loading" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-50 invisible">
 							<div class="spinner-border text-purple" role="status">
@@ -313,6 +324,7 @@ License: For each use you must have a valid license purchased only from above li
 								<!--begin::About card-->
 								<div class="card">
 									<!--begin::Body-->
+
 										
 										<!--begin::About-->
 										<ct-visualization id="tree-container"></ct-visualization>
@@ -382,7 +394,7 @@ License: For each use you must have a valid license purchased only from above li
 		<script src="assets/js/config.js" type="text/javascript"></script>   
 		<script src="assets/js/function.js"></script>
 		<script>
-			document.getElementById('number_of_asn').innerText = 0;
+			
 			function hidenLogo() {
 				var logo = document.getElementById('logo');
 				logo.style.display = 'none';
@@ -416,7 +428,6 @@ License: For each use you must have a valid license purchased only from above li
 					hideLoading(); 
 					hidenLogo();
 					console.log(json);
-					document.getElementById('number_of_asn').innerText = json.networks[asn_number].detail.metrics.score;
 					json = convertData2(json);
 					
 					if (Object.keys(json.tree).length === 0) {
