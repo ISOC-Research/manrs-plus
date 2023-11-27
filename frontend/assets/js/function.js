@@ -73,7 +73,7 @@ function convertData2(data1) {
   const data2 = {
     tree: {}
   };
-
+  console.log(data1);
   for (const networkId in data1.networks) {
     
     const network = data1.networks[networkId];
