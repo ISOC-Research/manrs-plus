@@ -42,11 +42,11 @@ function treeBoxes(urlService, jsonData)
 				 },
 		// Height and width are redefined later in function of the size of the tree
 		// (after that the data are loaded)
-		width = 800 - margin.right - margin.left,
+		width = 1000 - margin.right - margin.left,
 		height = 400 - margin.top - margin.bottom;
 	
-	var rectNode = { width : 300, height : 40, textMargin : 5 },
-		tooltip = { width : 500, height : 150, textMargin : 5 };
+	var rectNode = { width : 200, height : 130, textMargin : 5 },
+		tooltip = { width : 500, height : 100, textMargin : 5 };
 	var i = 0,
 		duration = 750,
 		root;
@@ -195,7 +195,7 @@ function treeBoxes(urlService, jsonData)
 		.attr('ry', 6)
 		.attr('width', rectNode.width)
 		.attr('height', rectNode.height)
-		.attr('class', 'node-rect')
+		.attr('style', 'white 10px solid')
 		.attr('fill', function (d) { return d.color; })
 		.attr('filter', 'url(#drop-shadow)');
 	
@@ -212,36 +212,37 @@ function treeBoxes(urlService, jsonData)
 				})
 		.append('xhtml').html(function(d) {
 					var country = d.country ? d.country.toLowerCase() : '';
-					return '<div style="width: ' +
+					var compliance = d.compliance;
+					var irr_rpki = d.irr>d.rpki ? d.colorIrr: d.colorRpki;
+					return '<div style=" width: ' +
 					(rectNode.width - rectNode.textMargin * 10) + 'px; height: ' +
 					(rectNode.height - rectNode.textMargin * 10) + 'px;" class="node-text wordwrap">' +
-					'<b>' + d.nodeName + '</b>' +
-					+
-    (country ?
-        ` <img
-            src="https://flagcdn.com/16x12/${country}.png"
-            srcset="https://flagcdn.com/32x24/${country}.png 2x,
-                https://flagcdn.com/48x36/${country}.png 3x"
-            width="16"
-            height="12"
-            alt="${country}"><br>` :
-        '')  +
-					`<div class="row">
-						<div class="col-md-2">${d.colorFiltering}</div>
-						<div class="col-md-2">${d.colorCoordination}</div>
-						<div class="col-md-4">${d.colorIrr}</div>
-						<div class="col-md-4">${d.colorRpki}</div>
-					</div>`
-				'</div>';
-				})
-		.on('mouseover', function(d) {
-			$('#nodeInfoID' + d.id).css('visibility', 'visible');
-			$('#nodeInfoTextID' + d.id).css('visibility', 'visible');
-		})
-		.on('mouseout', function(d) {
-			$('#nodeInfoID' + d.id).css('visibility', 'hidden');
-			$('#nodeInfoTextID' + d.id).css('visibility', 'hidden');
-		});
+					(compliance ? '': '</br></br>')+
+					 (country ?
+						`<img
+							src="https://flagcdn.com/16x12/${country}.png"
+							srcset="https://flagcdn.com/32x24/${country}.png 2x,https://flagcdn.com/48x36/${country}.png 3x"
+							width="16"
+							height="12"
+							alt="${country}">  `:'')
+					  +'<b>' + d.nodeName + '</b>'+
+					  (compliance === 1 ?
+						`<img
+							src="assets/media/logos/manrs1.png"
+							width="50"
+							alt="">  `:'')+
+						`</br>${d.colorFiltering}</br>${d.colorCoordination}</br>${irr_rpki}</br>${d.rovColor}
+							`+
+						'</div>';
+						})
+						.on('mouseover', function(d) {
+							$('#nodeInfoID' + d.id).css('visibility', 'visible');
+							$('#nodeInfoTextID' + d.id).css('visibility', 'visible');
+						})
+						.on('mouseout', function(d) {
+							$('#nodeInfoID' + d.id).css('visibility', 'hidden');
+							$('#nodeInfoTextID' + d.id).css('visibility', 'hidden');
+						});
 	
 		nodeEnterTooltip.append("rect")
 		.attr('id', function(d) { return 'nodeInfoID' + d.id; })
@@ -272,18 +273,6 @@ function treeBoxes(urlService, jsonData)
 		.style('fill', 'white')
 		.append("tspan")
 		.text(function(d) {return 'Name: ' + d.name;})
-		.append("tspan")
-		.attr('x', rectNode.width / 2 + tooltip.textMargin)
-		.attr('dy', '1.5em') // Déplacez vers le bas d'une ligne
-		.text(function(d) {
-			return 'Category: ' + d.category;
-		})
-		.append("tspan")
-		.attr('x', rectNode.width / 2 + tooltip.textMargin)
-		.attr('dy', '1.5em') // Déplacez vers le bas d'une ligne
-		.text(function(d) {
-			return 'Score: ' + d.score;
-		})
 		.append("tspan")
 		.attr('x', rectNode.width / 2 + tooltip.textMargin)
 		.attr('dy', '1.5em') // Déplacez vers le bas d'une ligne

@@ -4,11 +4,11 @@ function formatMetrics(metrics) {
 
 function filteringColor(filtering) {
   if (filtering <= 1.5 ) {
-    return `<div><span class="fw-bold">F:</span> <i class="bi bi-circle-fill text-success"></i></div>`
+    return `<span class="fw-bold">Filtering </span> <i class="bi bi-circle-fill text-success"></i>`
   }else if (filtering > 1.5 && filtering < 5) {
-    return `<div><span class="fw-bold">F:</span> <i class="bi bi-circle-fill text-warning"></i></div>`
+    return `<span class="fw-bold">Filtering </span> <i class="bi bi-circle-fill text-warning"></i>`
   }else if (filtering >= 5) {
-    return `<div><span class="fw-bold">F:</span> <i class="bi bi-circle-fill text-danger"></i></div>`
+    return `<span class="fw-bold">Filtering </span> <i class="bi bi-circle-fill text-danger"></i>`
   }
 }
 
@@ -23,48 +23,51 @@ function antispoofingColor(antispoofing) {
 }
 
 function coordinationColor(coordination) {
-  if (coordination == 0 ) {
-    return `<div><span class="fw-bold">C:</span> <i class="bi bi-circle-fill text-success"></i></div>`
-  }else if (coordination == 1) {
-    return `<div><span class="fw-bold">C:</span> <i class="bi bi-circle-fill text-danger"></i></div>`
+  if (coordination == 1 ) {
+    return `<span class="fw-bold">Coordination </span> <i class="bi bi-circle-fill text-success"></i>`
+  }else if (coordination == 0) {
+    return `<span class="fw-bold">Coordination </span> <i class="bi bi-circle-fill text-danger"></i>`
   }
 }
 
 function irrColor(irr) {
-  if (irr < 0.1 ) {
-    return `<div><span class="fw-bold">IRR:</span> <i class="bi bi-circle-fill text-success"></i></div>`
-  }else if (irr >= 0.1 && irr <= 0.5) {
-    return `<div><span class="fw-bold">IRR:</span> <i class="bi bi-circle-fill text-warning"></i></div>`
-  }else if (irr > 0.5) {
-    return `<div><span class="fw-bold">IRR:</span> <i class="bi bi-circle-fill text-danger"></i></div>`
+  if (irr < 0.5 ) {
+    return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-danger"></i>`
+  }else if (irr >= 0.5 && irr < 0.8) {
+    return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-warning"></i>`
+  }else if (irr >= 0.8) {
+    return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-success"></i>`
   }
 }
 
 function rpkiColor(rpki) {
-  if (rpki < 0.1 ) {
-    return `<div><span class="fw-bold">RPKI:</span> <i class="bi bi-circle-fill text-success"></i></div>`
-  }else if (rpki >= 0.1 && rpki <= 0.5) {
-    return `<div><span class="fw-bold">RPKI:</span> <i class="bi bi-circle-fill text-warning"></i></div>`
-  }else if (rpki > 0.5) {
-    return `<div><span class="fw-bold">RPKI:</span> <i class="bi bi-circle-fill text-danger"></i></div>`
+  if (rpki < 0.5 ) {
+    return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-danger"></i>`
+  }else if (rpki >= 0.5 && rpki < 0.8) {
+    return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-warning"></i>`
+  }else if (rpki >= 0.8) { 
+    return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-success"></i>`
   }
 }
-function raccourcirTexte(texte, limiteMots) {
-  if (texte == null) {
-
-    return texte = ' ';
+function rovColor(rov) {
+  if (rov == 0 ) {
+    return `<span class="fw-bold">ROV </span> <i class="bi bi-x-circle text-danger " ></i>`
+  }else if (rov > 0){
+    return `<span class="fw-bold">ROV </span> <i class="bi bi-check-circle text-success" ></i>`
   }
-  
-  var mots = texte.split(' ');
-  
-  if (mots.length > limiteMots) {
-      mots = mots.slice(0, limiteMots);
-
-      texte = mots.join(' ') + '...';
-  }
-
-  return texte;
 }
+function shortenText(text, charLimit) {
+  if (text == null) {
+    return ' ';
+  }
+
+  if (text.length > charLimit) {
+    text = text.slice(0, charLimit) + '...';
+  }
+
+  return text;
+}
+
 
 function convertData2(data1) {
   const data2 = {
@@ -74,19 +77,15 @@ function convertData2(data1) {
   for (const networkId in data1.networks) {
     
     const network = data1.networks[networkId];
-    const score = network.detail.metrics.score;
-    let type;
-
-    if (score >= 0 && score < 2) {
-      type = "type1"; // Color for the interval 0-2
-    } else if (score >= 2 && score < 4) {
-      type = "type2"; // Color for the interval 2-4
-    } else if (score >= 4 && score <= 6) {
-      type = "type3"; // Color for the interval 4-6
-    }
-   
+    let type = 'type4';
+    var irr_rpki = (network.detail.metrics.irr > network.detail.metrics.rpki) ? network.detail.metrics.irr : network.detail.metrics.rpki;
+    if (network.detail.metrics.coordination >= 0.8 && network.detail.metrics.coordination >= 0.8 && irr_rpki >= 0.8) {
+      compliance = 1;
+    } else {
+      compliance = 0;
+    } 
     const networkNode = {
-      nodeName: `AS ${networkId}-${raccourcirTexte(network.detail.name, 2)} `,
+      nodeName: `AS${networkId} `,
       name: network.detail.name,
       type: type,
       country: network.detail.country,
@@ -103,7 +102,8 @@ function convertData2(data1) {
       colorIrr: irrColor(network.detail.metrics.irr),
       colorRpki: rpkiColor(network.detail.metrics.rpki),
       rov: network.detail.metrics.rov,
-      score: score,
+      rovColor: rovColor(network.detail.metrics.rov),
+      compliance: compliance,
       label: formatMetrics(network.detail.metrics),
       link: {
         name: `Link ${networkId}`,
@@ -115,18 +115,16 @@ function convertData2(data1) {
 
     for (const providerId in network.providers) {
       const provider = network.providers[providerId];
-      const score = provider.detail.metrics.score;
-      let type;
+      let type = 'type4';
   
-      if (score >= 0 && score < 2) {
-        type = "type1"; // Color for the interval 0-2
-      } else if (score >= 2 && score < 4) {
-        type = "type2"; // Color for the interval 2-4
-      } else if (score >= 4 && score <= 6) {
-        type = "type3"; // Color for the interval 4-6
-      }
+      var irr_rpki = (provider.detail.metrics.irr >  provider.detail.metrics.rpki) ?  provider.detail.metrics.irr :  provider.detail.metrics.rpki;
+      if ( provider.detail.metrics.coordination >= 0.8 &&  provider.detail.metrics.coordination >= 0.8 && irr_rpki >= 0.8) {
+        compliance = 1;
+      } else {
+        compliance = 0;
+      }       
       const providerNode = {
-        nodeName: `AS ${providerId}-${raccourcirTexte(provider.detail.country, 2)} `,
+        nodeName: `AS${providerId} `,
         name: provider.detail.name,
         type: type,
         country: provider.detail.country,
@@ -142,7 +140,8 @@ function convertData2(data1) {
         colorAntispoofing: antispoofingColor(provider.detail.metrics.antispoofing),
         colorIrr: irrColor(provider.detail.metrics.irr),
         colorRpki: rpkiColor(provider.detail.metrics.rpki),
-        score: score,
+        rovColor: rovColor(provider.detail.metrics.rov),
+        compliance: compliance,
         label: formatMetrics(provider.detail.metrics),
         link: {
           name: `Link ${networkId} to ${providerId}`,
@@ -154,18 +153,16 @@ function convertData2(data1) {
 
       for (const providerL2Id in provider.providers_l2) {
         const providerL2 = provider.providers_l2[providerL2Id];
-        const score = providerL2.detail.metrics.score;
-        let type;
+        let type='type4';
     
-        if (score >= 0 && score < 2) {
-          type = "type1"; // Color for the interval 0-2
-        } else if (score >= 2 && score < 4) {
-          type = "type2"; // Color for the interval 2-4
-        } else if (score >= 4 && score <= 6) {
-          type = "type3"; // Color for the interval 4-6
-        }
+        var irr_rpki = (providerL2.detail.metrics.irr >  providerL2.detail.metrics.rpki) ?  providerL2.detail.metrics.irr :  providerL2.detail.metrics.rpki;
+        if (providerL2.detail.metrics.coordination >= 0.8 &&  providerL2.detail.metrics.coordination >= 0.8 && irr_rpki >= 0.8) {
+          compliance = 1;
+        } else {
+          compliance = 0;
+        }  
         const providerNodeL2 = {
-          nodeName: `AS ${providerL2Id}-${raccourcirTexte(providerL2.detail.country, 2)} `,
+          nodeName: `AS${providerL2Id} `,
           name: providerL2.detail.name,
           type: type,
           country: providerL2.detail.country,
@@ -181,7 +178,8 @@ function convertData2(data1) {
           colorAntispoofing: antispoofingColor(providerL2.detail.metrics.antispoofing),
           colorIrr: irrColor(providerL2.detail.metrics.irr),
           colorRpki: rpkiColor(providerL2.detail.metrics.rpki),
-          score: score,
+          rovColor: rovColor(providerL2.detail.metrics.rov),
+          compliance: compliance,
           label: formatMetrics(providerL2.detail.metrics),
           link: {
             name: `Link ${providerId} to ${providerL2Id}`,
