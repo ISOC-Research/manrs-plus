@@ -4,7 +4,7 @@ function formatMetrics(metrics) {
 
 function filteringColor(filtering) {
   if (filtering <= 1.5 ) {
-    return `<span class="fw-bold">Filtering </span> <i class="bi bi-circle-fill text-success"></i>`
+    return `<span class="fw-bold">Filtering </span> <i class="bi bi-circle-fill text-primary"></i>`
   }else if (filtering > 1.5 && filtering < 5) {
     return `<span class="fw-bold">Filtering </span> <i class="bi bi-circle-fill text-warning"></i>`
   }else if (filtering >= 5) {
@@ -14,7 +14,7 @@ function filteringColor(filtering) {
 
 function antispoofingColor(antispoofing) {
   if (antispoofing == 0 ) {
-    return `<div><span class="fw-bold">A:</span> <i class="bi bi-circle-fill text-success"></i></div>`
+    return `<div><span class="fw-bold">A:</span> <i class="bi bi-circle-fill text-primary"></i></div>`
   }else if (antispoofing == 0.5) {
     return `<div><span class="fw-bold">A:</span> <i class="bi bi-circle-fill text-warning"></i></div>`
   }else if (antispoofing == 1) {
@@ -24,7 +24,7 @@ function antispoofingColor(antispoofing) {
 
 function coordinationColor(coordination) {
   if (coordination == 1 ) {
-    return `<span class="fw-bold">Coordination </span> <i class="bi bi-circle-fill text-success"></i>`
+    return `<span class="fw-bold">Coordination </span> <i class="bi bi-circle-fill text-primary"></i>`
   }else if (coordination == 0) {
     return `<span class="fw-bold">Coordination </span> <i class="bi bi-circle-fill text-danger"></i>`
   }
@@ -36,7 +36,7 @@ function irrColor(irr) {
   }else if (irr >= 0.5 && irr < 0.8) {
     return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-warning"></i>`
   }else if (irr >= 0.8) {
-    return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-success"></i>`
+    return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-primary"></i>`
   }
 }
 
@@ -46,14 +46,14 @@ function rpkiColor(rpki) {
   }else if (rpki >= 0.5 && rpki < 0.8) {
     return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-warning"></i>`
   }else if (rpki >= 0.8) { 
-    return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-success"></i>`
+    return `<span class="fw-bold">IRR/RPKI </span> <i class="bi bi-circle-fill text-primary"></i>`
   }
 }
 function rovColor(rov) {
   if (rov == 0 ) {
     return `<span class="fw-bold">ROV </span> <i class="bi bi-x-circle text-danger " ></i>`
   }else if (rov > 0){
-    return `<span class="fw-bold">ROV </span> <i class="bi bi-check-circle text-success" ></i>`
+    return `<span class="fw-bold">ROV </span> <i class="bi bi-check-circle text-primary" ></i>`
   }
 }
 function shortenText(text, charLimit) {

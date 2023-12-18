@@ -230,7 +230,7 @@ function treeBoxes(urlService, jsonData)
 						`<img
 							src="assets/media/logos/manrs1.png"
 							width="50"
-							alt="">  `:'')+
+							alt=""></br><b>MANRS Compliant</b>  `:'')+
 						`</br>${d.colorFiltering}</br>${d.colorCoordination}</br>${irr_rpki}</br>${d.rovColor}
 							`+
 						'</div>';
